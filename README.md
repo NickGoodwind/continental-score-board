@@ -1,5 +1,7 @@
-# continental-score-board
-A simple Java continental score board app.
+# Continental score board
+A simple Continental score board Java app to enjoy the game without worring about the score with pen and paper. 
 
-Tu run simply download the `bin/RumiSB.jar` file and run the executable to start the scoreboar.
+## Installation
+Tu run the application simply download the `bin/RumiSB.jar` file and start the score boar.
+
 Enjoy!
