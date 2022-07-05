@@ -1,5 +1,7 @@
-# Continental score board
-An easy-to-use Continental scoreboard Java app for the family card game Continental, to enjoy the game without worring about the score with pen and paper. This app features a brand new, yet simple, system for keeping track of each players score for every game round. It also alows players to review previous round scores and the posibility to resume the game after finishing it. It also allows new games to start without finishing current game.
+# Continental Scoreboard
+An easy-to-use Continental scoreboard Java app for the family card game Continental. Enjoy the game without worring about the score with pen and paper. 
+
+This app features a brand new, yet simple, system for keeping track of each players score for every game round, allowing players to review previous scores and resume the game after finishing it.
 
 ## Installation
 Tu run the application simply download the `bin/Rumi Scoreboard.jar` file and start the scoreboard.
