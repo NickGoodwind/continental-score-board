@@ -1,79 +1,117 @@
 package interfaz;
 
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.ListIterator;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.border.TitledBorder;
 import mundo.Jugador;
 
 public class PanelJugadores extends JPanel {
-  private static final long serialVersionUID = 578493698984433016L;
-  
-  private ArrayList<Jugador> jugadores;
-  
-  public PanelJugadores(ArrayList<Jugador> paramArrayList) {
-    this.jugadores = paramArrayList;
-    setOpaque(false);
-    setLayout(new GridBagLayout());
-    Font font = new Font("Chalkduster", 0, 12);
-    JLabel jLabel1 = new JLabel("Jugadores");
-    jLabel1.setFont(font);
-    GridBagConstraints gridBagConstraints = new GridBagConstraints(0, 0, 2, 1, 0.0D, 0.0D, 10, 0, new Insets(5, 30, 30, 20), 0, 0);
-    add(jLabel1, gridBagConstraints);
-    JLabel jLabel2 = new JLabel("Puntos ronda");
-    jLabel2.setFont(font);
-    gridBagConstraints = new GridBagConstraints(2, 0, 4, 1, 0.0D, 0.0D, 10, 0, new Insets(5, 20, 30, 20), 0, 0);
-    add(jLabel2, gridBagConstraints);
-    JLabel jLabel3 = new JLabel("Total");
-    jLabel3.setFont(font);
-    gridBagConstraints = new GridBagConstraints(6, 0, 2, 1, 0.0D, 0.0D, 10, 0, new Insets(5, 20, 30, 30), 0, 0);
-    add(jLabel3, gridBagConstraints);
-    for (byte b = 0; b < this.jugadores.size(); b++) {
-      Jugador jugador = this.jugadores.get(b);
-      JLabel jLabel4 = new JLabel(jugador.darNombre());
-      gridBagConstraints = new GridBagConstraints(0, b + 1, 2, 1, 0.0D, 0.0D, 10, 0, new Insets(0, 30, 10, 20), 0, 0);
-      jLabel4.setFont(new Font("Comic Sans MS", 0, 12));
-      add(jLabel4, gridBagConstraints);
-      JTextField jTextField = new JTextField();
-      gridBagConstraints = new GridBagConstraints(2, b + 1, 4, 1, 0.0D, 0.0D, 10, 0, new Insets(0, 20, 10, 30), 0, 0);
-      jTextField.setPreferredSize(new Dimension(50, 25));
-      add(jTextField, gridBagConstraints);
-      JLabel jLabel5 = new JLabel(jugador.darScore() + "");
-      gridBagConstraints = new GridBagConstraints(6, b + 1, 2, 1, 0.0D, 0.0D, 10, 0, new Insets(0, 20, 10, 20), 0, 0);
-      jLabel5.setFont(new Font("Comic Sans MS", 0, 12));
-      add(jLabel5, gridBagConstraints);
-    } 
-    setSize(new Dimension(400, this.jugadores.size() * 40 + 50));
-    repaint();
-  }
-  
-  public ArrayList<Integer> darPuntajes() {
-    ArrayList<Integer> arrayList = new ArrayList();
-    Component[] arrayOfComponent = getComponents();
-    for (byte b = 0; b < arrayOfComponent.length; b++) {
-      try {
-        if (arrayOfComponent[b].getClass() == JTextField.class) {
-          arrayList.add(Integer.valueOf(Integer.parseInt(((JTextField)arrayOfComponent[b]).getText())));
-          ((JTextField)arrayOfComponent[b]).setText("");
-        } 
-      } catch (NumberFormatException numberFormatException) {
-        JOptionPane.showMessageDialog(this, "No se han inscrito los puntajes de \n todos los jugadores.", "Información faltante", 0);
-        return null;
-      } 
-    } 
-    return arrayList;
-  }
+	private static final long serialVersionUID = 578493698984433016L;
+
+	private ArrayList<Jugador> jugadores;
+	private ArrayList<JTextField> puntos;
+
+	public PanelJugadores(ArrayList<Jugador> jugadores) {
+		this.jugadores = jugadores;
+		this.puntos = new ArrayList<JTextField>();
+
+		setLayout(new GridBagLayout());
+		setSize(new Dimension(jugadores.size() * 140, 300));
+		for (Jugador jugador : this.jugadores) {
+			createColumn2(jugador);
+		}
+	}
+	
+	private void createColumn2(Jugador jugador) {
+		int j = jugador.darPuntajes().size();
+		
+		JPanel playerCol = new JPanel();
+		playerCol.setLayout(new GridLayout(1,2,0,0));
+		playerCol.setBorder(new TitledBorder(jugador.darNombre()));
+		playerCol.setPreferredSize(new Dimension(150,(j*25)+50));
+		
+		GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.weighty = 1;
+		this.add(playerCol,gbc);
+		
+		GridLayout colLayout = new GridLayout(j+1,1,0,0);
+		JPanel prevCol = new JPanel(colLayout);
+		playerCol.add(prevCol);
+		
+		JPanel totalCol = new JPanel(colLayout);
+		playerCol.add(totalCol);
+		
+		int sum = 0;
+		ListIterator<Integer> iterator = jugador.darPuntajes().listIterator();
+		while (iterator.hasNext()) {
+			int anterior = iterator.next();
+			sum += anterior;
+
+			JLabel prev = new JLabel(anterior + "");
+			styleLabel(prev);
+			prevCol.add(prev);
+
+			JLabel total = new JLabel(sum + "");
+			styleLabel(total);
+			totalCol.add(total);
+		}
+		
+		JTextField ronda = new JTextField();
+		ronda.setBorder(setBorder());
+		ronda.setHorizontalAlignment(SwingConstants.CENTER);
+		puntos.add(ronda);
+		prevCol.add(ronda);
+	}
+
+	private void styleLabel(JLabel label) {
+		label.setPreferredSize(new Dimension(100,25));
+		label.setBorder(setBorder());
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setOpaque(true);
+		label.setBackground(new Color(180, 180, 180));
+	}
+
+	private Border setBorder() {
+		MatteBorder b1 = new MatteBorder(0, 0, 1, 1, new Color(100, 100, 100));
+		MatteBorder b2 = new MatteBorder(1, 1, 0, 0, new Color(200, 200, 200));
+		return new CompoundBorder(b1, b2);
+	}
+
+	public ArrayList<Integer> darPuntajesRonda() {
+		ArrayList<Integer> puntajes = new ArrayList<Integer>();
+		for (JTextField campo : puntos) {
+			try {
+				String text = campo.getText();
+				int valor = Integer.parseInt(text);
+				Jugador.verificarPuntaje(valor);
+				puntajes.add(valor);
+				campo.setText("");
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "Error en el puntaje de \n algún jugador.", "Información", 0);
+				return null;
+			}
+		}
+		return puntajes;
+	}
 }
 
-
-/* Location:              /Users/Nicholas/Documents/Trabajo/NickGoodwind T.S./Programación/RumiSB.jar!/interfaz/PanelJugadores.class
- * Java compiler version: 8 (52.0)
- * JD-Core Version:       1.1.3
+/*
+ * Location: /Users/Nicholas/Documents/Trabajo/NickGoodwind
+ * T.S./Programación/RumiSB.jar!/interfaz/PanelJugadores.class Java compiler
+ * version: 8 (52.0) JD-Core Version: 1.1.3
  */

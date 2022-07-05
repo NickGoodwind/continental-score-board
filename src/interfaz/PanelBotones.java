@@ -26,36 +26,41 @@ public class PanelBotones extends JPanel implements ActionListener {
   
   public PanelBotones(InterfazRumi paramInterfazRumi) {
     this.principal = paramInterfazRumi;
+    
     setOpaque(false);
     setLayout(new GridLayout(1, 3));
     setSize(new Dimension(400, 50));
+    
     this.nuevaPartida = new JButton("Nueva partida");
-    this.nuevaPartida.setActionCommand("nueva");
+    this.nuevaPartida.setActionCommand(PanelBotones.NUEVA);
     this.nuevaPartida.addActionListener(this);
-    this.finalizarRonda = new JButton("Finalizar ronda");
-    this.finalizarRonda.setActionCommand("ronda");
-    this.finalizarRonda.addActionListener(this);
-    this.terminarJuego = new JButton("Terminar partida");
-    this.terminarJuego.setActionCommand("terminar");
-    this.terminarJuego.addActionListener(this);
     add(this.nuevaPartida);
+    
+    this.finalizarRonda = new JButton("Finalizar ronda");
+    this.finalizarRonda.setActionCommand(PanelBotones.RONDA);
+    this.finalizarRonda.addActionListener(this);
     add(this.finalizarRonda);
+    
+    this.terminarJuego = new JButton("Terminar partida");
+    this.terminarJuego.setActionCommand(PanelBotones.TERMINAR);
+    this.terminarJuego.addActionListener(this);
     add(this.terminarJuego);
+    
     if (!this.principal.hayJugadores()) {
       this.finalizarRonda.setEnabled(false);
       this.terminarJuego.setEnabled(false);
     } 
   }
   
-  public void actionPerformed(ActionEvent paramActionEvent) {
-    String str = paramActionEvent.getActionCommand();
-    if (str.equals("nueva")) {
+  public void actionPerformed(ActionEvent event) {
+    String str = event.getActionCommand();
+    if (str.equals(PanelBotones.NUEVA)) {
       this.principal.dispose();
       InterfazRumi.main((String[])null);
-    } else if (str.equals("ronda")) {
+    } else if (str.equals(PanelBotones.RONDA)) {
       this.principal.sumarPuntos();
       this.principal.refrescar();
-    } else if (str.equals("terminar")) {
+    } else if (str.equals(PanelBotones.TERMINAR)) {
       this.principal.terminarPartida();
     } 
   }

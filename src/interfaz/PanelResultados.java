@@ -1,7 +1,6 @@
 package interfaz;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -9,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import mundo.Jugador;
@@ -17,48 +17,68 @@ public class PanelResultados extends JPanel implements ActionListener {
   private static final long serialVersionUID = -1539197777235667582L;
   
   private static final String NUEVA = "nueva";
+  private static final String VOLVER = "volver";
+  private static final String CERRAR = "cerrar";
   
-  private InterfazRumi principal;
+  private JFrame principal;
   
   private ArrayList<Jugador> jugadores;
   
-  private JButton nueva;
-  
-  public PanelResultados(InterfazRumi paramInterfazRumi, ArrayList<Jugador> paramArrayList) {
-    this.jugadores = paramArrayList;
-    this.principal = paramInterfazRumi;
+  public PanelResultados(JFrame frame, ArrayList<Jugador> jugadores) {
+    this.jugadores = jugadores;
+    this.principal = frame;
     setOpaque(false);
     setLayout(new GridBagLayout());
-    JLabel jLabel1 = new JLabel("1ª Posición:");
-    GridBagConstraints gridBagConstraints = new GridBagConstraints(0, 0, 2, 1, 0.0D, 0.0D, 10, 0, new Insets(30, 10, 0, 0), 0, 0);
-    Font font = new Font("Comic Sans MS", 1, 13);
-    jLabel1.setFont(font);
-    jLabel1.setForeground(new Color(255, 215, 0));
-    add(jLabel1, gridBagConstraints);
-    JLabel jLabel2 = new JLabel(((Jugador)this.jugadores.get(0)).darNombre());
-    gridBagConstraints = new GridBagConstraints(2, 0, 2, 1, 0.0D, 0.0D, 10, 0, new Insets(30, 10, 0, 0), 0, 0);
-    jLabel2.setFont(font);
-    jLabel2.setForeground(new Color(255, 215, 0));
-    add(jLabel2, gridBagConstraints);
-    for (byte b = 1; b < this.jugadores.size(); b++) {
-      gridBagConstraints = new GridBagConstraints(0, b + 1, 2, 1, 0.0D, 0.0D, 10, 0, new Insets(10, 10, 0, 0), 0, 0);
-      add(new JLabel((b + 1) + "ª Posición:"), gridBagConstraints);
-      gridBagConstraints = new GridBagConstraints(2, b + 1, 2, 1, 0.0D, 0.0D, 10, 0, new Insets(10, 10, 0, 0), 0, 0);
-      add(new JLabel(((Jugador)this.jugadores.get(b)).darNombre()), gridBagConstraints);
+    
+    JLabel primer = new JLabel("1ª Posición:");
+    GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_END, 0, new Insets(30, 50, 0, 0), 0, 0);
+    primer.setForeground(new Color(255, 215, 0));
+    add(primer, gbc);
+    
+    JLabel nombre = new JLabel(((Jugador)this.jugadores.get(0)).darNombre());
+    gbc = new GridBagConstraints(GridBagConstraints.RELATIVE, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, 0, new Insets(30, 0, 0, 0), 0, 0);
+    nombre.setForeground(new Color(255, 215, 0));
+    add(nombre, gbc);
+    
+    byte b;
+    for (b = 1; b < this.jugadores.size(); b++) {
+      gbc = new GridBagConstraints(0, b, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_END, 0, new Insets(10, 50, 0, 0), 0, 0);
+      add(new JLabel((b + 1) + "ª Posición:"), gbc);
+      gbc = new GridBagConstraints(GridBagConstraints.RELATIVE, b, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, 0, new Insets(10, 0, 0, 0), 0, 0);
+      add(new JLabel(((Jugador)this.jugadores.get(b)).darNombre()), gbc);
     } 
-    this.nueva = new JButton("Nueva partida");
-    this.nueva.addActionListener(this);
-    this.nueva.setActionCommand("nueva");
-    gridBagConstraints = new GridBagConstraints(0, -1, 4, 1, 0.0D, 0.0D, 10, 0, new Insets(20, 10, 0, 0), 0, 0);
-    add(this.nueva, gridBagConstraints);
+    
+    JPanel botones = new JPanel();
+    gbc = new GridBagConstraints(0, GridBagConstraints.RELATIVE, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, 0, new Insets(20, 0, 0, 0), 0, 0);
+    add(botones, gbc);
+
+    JButton nueva = new JButton("Nueva partida");
+    nueva.addActionListener(this);
+    nueva.setActionCommand(PanelResultados.NUEVA);
+    botones.add(nueva);
+    
+    JButton volver = new JButton("Volver");
+    volver.addActionListener(this);
+    volver.setActionCommand(PanelResultados.VOLVER);
+    botones.add(volver);
+    
+    JButton cerrar = new JButton("Cerrar");
+    cerrar.addActionListener(this);
+    cerrar.setActionCommand(PanelResultados.CERRAR);
+    botones.add(cerrar);
   }
   
   public void actionPerformed(ActionEvent paramActionEvent) {
     String str = paramActionEvent.getActionCommand();
-    if (str.equals("nueva")) {
+    if (str.equals(PanelResultados.NUEVA)) {
       this.principal.dispose();
       InterfazRumi.main(null);
-    } 
+    } else if(str.equals(PanelResultados.VOLVER)) {
+    	((InterfazRumi) this.principal).volver();
+    }  else if(str.equals(PanelResultados.CERRAR)) {
+    	this.principal.dispose();
+		System.exit(0);
+    }
   }
 }
 
